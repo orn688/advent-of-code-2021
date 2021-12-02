@@ -14,6 +14,7 @@ struct Problem {
 fn main() {
     let mut methods: HashMap<Problem, fn(String) -> Result<String, String>> = HashMap::new();
     methods.insert(Problem { day: 1, part: 1 }, day01::part1);
+    methods.insert(Problem { day: 1, part: 2 }, day01::part2);
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
