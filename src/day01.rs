@@ -34,22 +34,24 @@ fn parse_input(input: String) -> Result<Vec<i32>, String> {
     Ok(numbers)
 }
 
+#[allow(dead_code)]
+const TEST_INPUT: &str = "199
+200
+208
+210
+200
+207
+240
+269
+260
+263";
+
 #[test]
 fn test_part1() {
-    let input = vec![199, 200, 208, 210, 200, 207, 240, 269, 260, 263]
-        .iter()
-        .map(|x| x.to_string())
-        .reduce(|a, b| a + "\n" + &b)
-        .unwrap();
-    assert_eq!(part1(input).unwrap(), "7");
+    assert_eq!(part1(TEST_INPUT.to_string()).unwrap(), "7");
 }
 
 #[test]
 fn test_part2() {
-    let input = vec![199, 200, 208, 210, 200, 207, 240, 269, 260, 263]
-        .iter()
-        .map(|x| x.to_string())
-        .reduce(|a, b| a + "\n" + &b)
-        .unwrap();
-    assert_eq!(part2(input).unwrap(), "5");
+    assert_eq!(part2(TEST_INPUT.to_string()).unwrap(), "5");
 }
