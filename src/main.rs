@@ -1,3 +1,5 @@
+mod day01;
+
 use std::{collections::HashMap, env, fs, path::Path, process};
 
 const YEAR: i32 = 2021;
@@ -11,7 +13,7 @@ struct Problem {
 
 fn main() {
     let mut methods: HashMap<Problem, fn(String) -> Result<String, String>> = HashMap::new();
-    methods.insert(Problem { day: 1, part: 1 }, day01_part1);
+    methods.insert(Problem { day: 1, part: 1 }, day01::part1);
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
@@ -56,8 +58,4 @@ fn download_input(day: i32) -> Result<String, String> {
         Err(e) => Err(format!("{}", e.status().unwrap().to_string())),
         Ok(r) => Ok(r.text().unwrap()),
     }
-}
-
-fn day01_part1(input: String) -> Result<String, String> {
-    Ok(input)
 }
