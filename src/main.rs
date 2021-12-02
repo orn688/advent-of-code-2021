@@ -11,8 +11,10 @@ struct Problem {
     part: i32,
 }
 
+type PartFunc = fn(String) -> Result<String, String>;
+
 fn main() {
-    let mut methods: HashMap<Problem, fn(String) -> Result<String, String>> = HashMap::new();
+    let mut methods: HashMap<Problem, PartFunc> = HashMap::new();
     methods.insert(Problem { day: 1, part: 1 }, day01::part1);
     methods.insert(Problem { day: 1, part: 2 }, day01::part2);
 
@@ -56,7 +58,7 @@ fn download_input(day: i32) -> Result<String, String> {
         .send()
         .unwrap();
     match resp.error_for_status() {
-        Err(e) => Err(format!("{}", e.status().unwrap().to_string())),
+        Err(e) => Err(e.status().unwrap().to_string()),
         Ok(r) => Ok(r.text().unwrap()),
     }
 }
