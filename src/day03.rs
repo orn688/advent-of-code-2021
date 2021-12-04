@@ -1,5 +1,12 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Index};
 
+/// Given a list of binary numbers, produces two new numbers of the same length:
+/// one where each binary digit is the *most* common digit at the corresponding
+/// index across all the input numbers, and another where each binary digit is
+/// the *least* common digit at the corresponding index across all the input
+/// numbers.
+///
+/// Then returns the product of the resulting two numbres as a decimal.
 pub fn part1(input: &str) -> Result<String, String> {
     let lines = input.trim().split_whitespace();
     let mut length = 0;
@@ -26,6 +33,65 @@ pub fn part1(input: &str) -> Result<String, String> {
     Ok((most_common * least_common).to_string())
 }
 
+pub fn part2(input: &str) -> Result<String, String> {
+    let lines: Vec<Vec<char>> = input
+        .trim()
+        .split_whitespace()
+        .map(|s| s.chars().collect::<Vec<char>>())
+        .collect();
+
+    let mut most_common = lines.to_vec();
+    let mut i = 0;
+    while most_common.len() > 1 {
+        let ones: Vec<Vec<char>> = most_common
+            .iter()
+            .filter(|l| *l.index(i) == '1')
+            .cloned()
+            .collect();
+        let zeroes: Vec<Vec<char>> = most_common
+            .iter()
+            .filter(|l| *l.index(i) == '0')
+            .cloned()
+            .collect();
+        if ones.len() >= zeroes.len() {
+            most_common = ones
+        } else {
+            most_common = zeroes
+        }
+        i += 1;
+    }
+
+    let mut least_common = lines.to_vec();
+    let mut i = 0;
+    while least_common.len() > 1 {
+        let ones: Vec<Vec<char>> = least_common
+            .iter()
+            .filter(|l| *l.index(i) == '1')
+            .cloned()
+            .collect();
+        let zeroes: Vec<Vec<char>> = least_common
+            .iter()
+            .filter(|l| *l.index(i) == '0')
+            .cloned()
+            .collect();
+        if ones.len() >= zeroes.len() {
+            least_common = zeroes
+        } else {
+            least_common = ones
+        }
+        i += 1;
+    }
+
+    let m: String = most_common.index(0).iter().collect();
+    let l: String = least_common.index(0).iter().collect();
+
+    Ok((binary_string_to_int(&m) * binary_string_to_int(&l)).to_string())
+}
+
+fn binary_string_to_int(s: &str) -> isize {
+    isize::from_str_radix(s, 2).unwrap()
+}
+
 #[allow(dead_code)]
 const TEST_INPUT: &str = "
 00100
@@ -45,4 +111,9 @@ const TEST_INPUT: &str = "
 #[test]
 fn test_part1() {
     assert_eq!(part1(TEST_INPUT).unwrap(), "198");
+}
+
+#[test]
+fn test_part2() {
+    assert_eq!(part2(TEST_INPUT).unwrap(), "230");
 }

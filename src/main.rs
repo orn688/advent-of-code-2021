@@ -23,6 +23,7 @@ fn main() {
     methods.insert(Problem { day: 2, part: 1 }, day02::part1);
     methods.insert(Problem { day: 2, part: 2 }, day02::part2);
     methods.insert(Problem { day: 3, part: 1 }, day03::part1);
+    methods.insert(Problem { day: 3, part: 2 }, day03::part2);
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
