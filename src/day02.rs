@@ -1,4 +1,4 @@
-pub fn part1(input: String) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String, String> {
     let moves = parse_input(input);
     let mut horiz = 0;
     let mut depth = 0;
@@ -13,7 +13,7 @@ pub fn part1(input: String) -> Result<String, String> {
     Ok((horiz * depth).to_string())
 }
 
-pub fn part2(input: String) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String, String> {
     let moves = parse_input(input);
     let (mut horiz, mut depth, mut aim) = (0, 0, 0);
 
@@ -36,7 +36,7 @@ struct Move {
     count: i32,
 }
 
-fn parse_input(input: String) -> Vec<Move> {
+fn parse_input(input: &str) -> Vec<Move> {
     input
         .trim()
         .lines()
@@ -60,10 +60,10 @@ forward 2";
 
 #[test]
 fn test_part1() {
-    assert_eq!(part1(TEST_INPUT.to_string()).unwrap(), "150");
+    assert_eq!(part1(TEST_INPUT).unwrap(), "150");
 }
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT.to_string()).unwrap(), "900");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "900");
 }

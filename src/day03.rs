@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub fn part1(input: String) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String, String> {
     let lines = input.trim().split_whitespace();
     let mut length = 0;
     let mut ones_counts: HashMap<usize, i64> = HashMap::new();
@@ -44,5 +44,5 @@ const TEST_INPUT: &str = "
 
 #[test]
 fn test_part1() {
-    assert_eq!(part1(TEST_INPUT.to_string()).unwrap(), "198");
+    assert_eq!(part1(TEST_INPUT).unwrap(), "198");
 }

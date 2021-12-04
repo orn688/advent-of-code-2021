@@ -1,6 +1,6 @@
 /// Counts the number of times a depth measurement increases from the previous
 /// one.
-pub fn part1(input: String) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String, String> {
     let mut num_increasing = 0;
     let mut prev = -1;
     for depth in parse_input(input).unwrap() {
@@ -14,7 +14,7 @@ pub fn part1(input: String) -> Result<String, String> {
 
 /// Counts the number of times a depth measurement increases from one window of
 /// three entries to the next.
-pub fn part2(input: String) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String, String> {
     let window_size = 3;
     let mut num_increasing = 0;
     let mut prev_sum = -1;
@@ -29,7 +29,7 @@ pub fn part2(input: String) -> Result<String, String> {
     Ok(num_increasing.to_string())
 }
 
-fn parse_input(input: String) -> Result<Vec<i32>, String> {
+fn parse_input(input: &str) -> Result<Vec<i32>, String> {
     let numbers: Vec<i32> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
     Ok(numbers)
 }
@@ -48,10 +48,10 @@ const TEST_INPUT: &str = "199
 
 #[test]
 fn test_part1() {
-    assert_eq!(part1(TEST_INPUT.to_string()).unwrap(), "7");
+    assert_eq!(part1(TEST_INPUT).unwrap(), "7");
 }
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT.to_string()).unwrap(), "5");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "5");
 }

@@ -13,7 +13,7 @@ struct Problem {
     part: i32,
 }
 
-type PartFunc = fn(String) -> Result<String, String>;
+type PartFunc = fn(&str) -> Result<String, String>;
 
 fn main() {
     let mut methods: HashMap<Problem, PartFunc> = HashMap::new();
@@ -36,7 +36,7 @@ fn main() {
     let meth = methods.get(&prob).expect("unimplemented day");
 
     let input = get_input(prob.day).unwrap();
-    let result = meth(input).unwrap();
+    let result = meth(input.as_str()).unwrap();
     println!("{}", result);
 }
 
