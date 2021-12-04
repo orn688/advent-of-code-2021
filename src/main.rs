@@ -1,5 +1,6 @@
 mod day01;
 mod day02;
+mod day03;
 
 use std::{collections::HashMap, env, fs, path::Path, process};
 
@@ -16,10 +17,12 @@ type PartFunc = fn(String) -> Result<String, String>;
 
 fn main() {
     let mut methods: HashMap<Problem, PartFunc> = HashMap::new();
+    // TODO: figure out if this can be done without so much boilerplate.
     methods.insert(Problem { day: 1, part: 1 }, day01::part1);
     methods.insert(Problem { day: 1, part: 2 }, day01::part2);
     methods.insert(Problem { day: 2, part: 1 }, day02::part1);
     methods.insert(Problem { day: 2, part: 2 }, day02::part2);
+    methods.insert(Problem { day: 3, part: 1 }, day03::part1);
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
