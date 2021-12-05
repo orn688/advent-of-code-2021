@@ -8,16 +8,32 @@ pub fn part1(input: &str) -> Result<String, String> {
         for board in &mut boards {
             board.apply_num(num);
             if board.has_bingo() {
-                let res = num * board.unmarked_sum();
-                return Ok(res.to_string());
+                let score = num * board.unmarked_sum();
+                return Ok(score.to_string());
             }
         }
     }
     Err(String::from("no board won"))
 }
 
-pub fn part2(_: &str) -> Result<String, String> {
-    Ok(String::new())
+pub fn part2(input: &str) -> Result<String, String> {
+    let mut boards = vec![];
+    let numbers = parse_input(input, &mut boards);
+    for num in numbers {
+        for board in &mut boards {
+            board.apply_num(num);
+        }
+        let last_board_sum = boards.last().unwrap().unmarked_sum();
+        // Remove all boards that now have a bingo. If there are no longer any
+        // boards without a bingo, return the score of the last board to get a
+        // bingo.
+        let new_boards: Vec<Board> = boards.into_iter().filter(|b| !b.has_bingo()).collect();
+        if new_boards.is_empty() {
+            return Ok((num * last_board_sum).to_string());
+        }
+        boards = new_boards;
+    }
+    Err(String::from("some boards never won"))
 }
 
 fn parse_input(input: &str, boards: &mut Vec<Board>) -> Vec<i32> {
@@ -124,5 +140,5 @@ fn test_part1() {
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "1924");
 }
