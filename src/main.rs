@@ -21,30 +21,46 @@ struct Problem {
 
 type PartFunc = fn(&str) -> Result<String, String>;
 
+/// Hacky macro to slightly simplify the process of importing and using the file
+/// for a new day's problem.
+macro_rules! add_day {
+    ($hm:ident, $module:ident) => {
+        $hm.insert(
+            stringify!($module)
+                .strip_prefix("day")
+                .unwrap()
+                .parse()
+                .unwrap(),
+            ($module::part1, $module::part2),
+        )
+    };
+}
+
 fn main() {
-    let mut methods: HashMap<Problem, PartFunc> = HashMap::new();
-    // TODO: figure out if this can be done without so much boilerplate.
-    methods.insert(Problem { day: 1, part: 1 }, day01::part1);
-    methods.insert(Problem { day: 1, part: 2 }, day01::part2);
-    methods.insert(Problem { day: 2, part: 1 }, day02::part1);
-    methods.insert(Problem { day: 2, part: 2 }, day02::part2);
-    methods.insert(Problem { day: 3, part: 1 }, day03::part1);
-    methods.insert(Problem { day: 3, part: 2 }, day03::part2);
-    methods.insert(Problem { day: 4, part: 1 }, day04::part1);
-    methods.insert(Problem { day: 4, part: 2 }, day04::part2);
+    let mut methods: HashMap<i32, (PartFunc, PartFunc)> = HashMap::new();
+    add_day!(methods, day01);
+    add_day!(methods, day02);
+    add_day!(methods, day03);
+    add_day!(methods, day04);
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
         println!("Usage: aoc <day> <part>");
         process::exit(1);
     }
-    let prob = Problem {
-        day: args[1].parse().unwrap(),
-        part: args[2].parse().unwrap(),
+    let day: i32 = args[1].parse().unwrap();
+    let parts = methods.get(&day).expect("unimplemented day");
+    let part: i32 = args[2].parse().unwrap();
+    let meth = if part == 1 {
+        parts.0
+    } else if part == 2 {
+        parts.1
+    } else {
+        println!("invalid part {}", part);
+        exit(1);
     };
-    let meth = methods.get(&prob).expect("unimplemented day");
 
-    let input = get_input(prob.day).unwrap();
+    let input = get_input(day).unwrap();
     match meth(input.as_str()) {
         Ok(result) => println!("{}", result),
         Err(msg) => {
