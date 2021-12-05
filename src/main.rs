@@ -3,7 +3,12 @@ mod day02;
 mod day03;
 mod day04;
 
-use std::{collections::HashMap, env, fs, path::Path, process};
+use std::{
+    collections::HashMap,
+    env, fs,
+    path::Path,
+    process::{self, exit},
+};
 
 const YEAR: i32 = 2021;
 static COOKIE_ENV_VAR_NAME: &str = "AOC_SESSION_ID";
@@ -40,8 +45,13 @@ fn main() {
     let meth = methods.get(&prob).expect("unimplemented day");
 
     let input = get_input(prob.day).unwrap();
-    let result = meth(input.as_str()).unwrap();
-    println!("{}", result);
+    match meth(input.as_str()) {
+        Ok(result) => println!("{}", result),
+        Err(msg) => {
+            println!("ERROR: {}", msg);
+            exit(1);
+        }
+    };
 }
 
 fn get_input(day: i32) -> Result<String, String> {
