@@ -5,23 +5,31 @@ use regex::Regex;
 /// Counts the number of points at which two lines intersect, only counting
 /// horizontal and vertical lines.
 pub fn part1(input: &str) -> Result<String, String> {
+    let lines = parse_input(input)
+        .into_iter()
+        .filter(|line| line.horizontal() || line.vertical())
+        .collect();
+    let overlaps = count_overlaps(lines);
+    Ok(overlaps.to_string())
+}
+
+/// Counts the number of points at which two lines intersect, including diagonal
+/// lines.
+pub fn part2(input: &str) -> Result<String, String> {
     let lines = parse_input(input);
+    let overlaps = count_overlaps(lines);
+    Ok(overlaps.to_string())
+}
+
+fn count_overlaps(lines: Vec<Line>) -> usize {
     let mut counts = HashMap::new();
     for line in lines {
-        if !line.horizontal() && !line.vertical() {
-            continue;
-        }
         for pt in line.points() {
             let count = counts.entry(pt).or_insert(0);
             *count += 1;
         }
     }
-    let overlaps = counts.into_values().filter(|v| *v > 1).count();
-    Ok(overlaps.to_string())
-}
-
-pub fn part2(_: &str) -> Result<String, String> {
-    Ok(String::new())
+    counts.into_values().filter(|v| *v > 1).count()
 }
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
@@ -111,5 +119,5 @@ fn test_part1() {
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "12");
 }
