@@ -4,6 +4,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 use std::{
     collections::HashMap,
@@ -46,6 +47,7 @@ fn main() {
     add_day!(methods, day04);
     add_day!(methods, day05);
     add_day!(methods, day06);
+    add_day!(methods, day07);
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
