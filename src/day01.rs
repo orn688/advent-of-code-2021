@@ -3,7 +3,7 @@
 pub fn part1(input: &str) -> Result<String, String> {
     let mut num_increasing = 0;
     let mut prev = -1;
-    for depth in parse_input(input).unwrap() {
+    for depth in parse_input(input)? {
         if prev >= 0 && depth > prev {
             num_increasing += 1;
         }
@@ -18,7 +18,7 @@ pub fn part2(input: &str) -> Result<String, String> {
     let window_size = 3;
     let mut num_increasing = 0;
     let mut prev_sum = -1;
-    let depths = parse_input(input).unwrap();
+    let depths = parse_input(input)?;
     for window in depths.windows(window_size) {
         let sum = window.iter().sum();
         if prev_sum >= 0 && sum > prev_sum {
@@ -35,7 +35,8 @@ fn parse_input(input: &str) -> Result<Vec<i32>, String> {
 }
 
 #[allow(dead_code)]
-const TEST_INPUT: &str = "199
+const TEST_INPUT: &str = "
+199
 200
 208
 210
@@ -44,7 +45,8 @@ const TEST_INPUT: &str = "199
 240
 269
 260
-263";
+263
+";
 
 #[test]
 fn test_part1() {

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use regex::Regex;
+use regex::{Captures, Regex};
 
 /// Counts the number of points at which two lines intersect, only counting
 /// horizontal and vertical lines.
@@ -86,16 +86,20 @@ fn parse_input(input: &str) -> Vec<Line> {
             let caps = re.captures(line).unwrap();
             Line {
                 start: Point {
-                    x: caps.get(1).unwrap().as_str().parse().unwrap(),
-                    y: caps.get(2).unwrap().as_str().parse().unwrap(),
+                    x: int_from_captures(&caps, 1),
+                    y: int_from_captures(&caps, 2),
                 },
                 end: Point {
-                    x: caps.get(3).unwrap().as_str().parse().unwrap(),
-                    y: caps.get(4).unwrap().as_str().parse().unwrap(),
+                    x: int_from_captures(&caps, 3),
+                    y: int_from_captures(&caps, 4),
                 },
             }
         })
         .collect()
+}
+
+fn int_from_captures(caps: &Captures, group: usize) -> i32 {
+    caps.get(group).unwrap().as_str().parse().unwrap()
 }
 
 #[allow(dead_code)]

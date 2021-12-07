@@ -72,17 +72,17 @@ fn main() {
     };
 }
 
-fn get_input(day: i32) -> Result<String, String> {
+fn get_input(day: i32) -> Result<String, std::io::Error> {
     let cache_dir = Path::new("./.cache");
     if !cache_dir.exists() {
-        fs::create_dir(cache_dir).unwrap();
+        fs::create_dir(cache_dir)?;
     }
     let day_file = cache_dir.join(format!("day{:02}.txt", day));
     if day_file.exists() {
-        return Ok(fs::read_to_string(day_file).unwrap());
+        return fs::read_to_string(day_file);
     }
     let text = download_input(day).unwrap();
-    std::fs::write(day_file, text.as_str()).unwrap();
+    std::fs::write(day_file, text.as_str())?;
     Ok(text)
 }
 
