@@ -5,8 +5,24 @@ pub fn part1(input: &str) -> Result<String, String> {
     Ok(fuel.to_string())
 }
 
-pub fn part2(_: &str) -> Result<String, String> {
-    Ok(String::new())
+// TODO: optimize, this is algorithm is completely brute-force.
+pub fn part2(input: &str) -> Result<String, String> {
+    let nums = parse_input(input);
+    let max = *nums.iter().max().unwrap();
+    let min = *nums.iter().min().unwrap();
+
+    let mut min_fuel: Option<i32> = None;
+    for target in min..=max {
+        let fuel = nums
+            .iter()
+            .map(|&num| (1..=(target - num).abs()).sum::<i32>())
+            .sum();
+        min_fuel = match min_fuel {
+            None => Some(fuel),
+            Some(current_min) => Some(current_min.min(fuel)),
+        };
+    }
+    Ok(min_fuel.unwrap().to_string())
 }
 
 fn median(nums: &mut Vec<i32>) -> i32 {
@@ -37,5 +53,5 @@ fn test_part1() {
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "168");
 }
