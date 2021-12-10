@@ -1,5 +1,7 @@
 use std::{collections::HashMap, ops::Index};
 
+use anyhow::{Context, Result};
+
 /// Given a list of binary numbers, produces two new numbers of the same length:
 /// one where each binary digit is the *most* common digit at the corresponding
 /// index across all the input numbers, and another where each binary digit is
@@ -7,7 +9,7 @@ use std::{collections::HashMap, ops::Index};
 /// numbers.
 ///
 /// Then returns the product of the resulting two numbres as a decimal.
-pub fn part1(input: &str) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String> {
     let lines = input.trim().split_whitespace();
     let mut length = 0;
     let mut ones_counts: HashMap<usize, i64> = HashMap::new();
@@ -24,7 +26,10 @@ pub fn part1(input: &str) -> Result<String, String> {
     for i in 0..ones_counts.len() {
         least_common <<= 1;
         most_common <<= 1;
-        if ones_counts.get(&i).unwrap() > &(length / 2) {
+        let ones_count = ones_counts
+            .get(&i)
+            .ok_or_else(|| anyhow::anyhow!("no count for {}", i))?;
+        if ones_count > &(length / 2) {
             most_common |= 1;
         } else {
             least_common |= 1;
@@ -33,7 +38,7 @@ pub fn part1(input: &str) -> Result<String, String> {
     Ok((most_common * least_common).to_string())
 }
 
-pub fn part2(input: &str) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String> {
     let lines: Vec<Vec<char>> = input
         .trim()
         .split_whitespace()
@@ -85,11 +90,11 @@ pub fn part2(input: &str) -> Result<String, String> {
     let m: String = most_common.index(0).iter().collect();
     let l: String = least_common.index(0).iter().collect();
 
-    Ok((binary_string_to_int(&m) * binary_string_to_int(&l)).to_string())
+    Ok((binary_string_to_int(&m)? * binary_string_to_int(&l)?).to_string())
 }
 
-fn binary_string_to_int(s: &str) -> isize {
-    isize::from_str_radix(s, 2).unwrap()
+fn binary_string_to_int(s: &str) -> Result<isize> {
+    isize::from_str_radix(s, 2).context("failed to parse binary string")
 }
 
 #[allow(dead_code)]

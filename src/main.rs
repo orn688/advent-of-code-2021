@@ -7,6 +7,7 @@ mod day06;
 mod day07;
 mod day08;
 
+use anyhow::{Context, Result};
 use std::{
     collections::HashMap,
     env, fs,
@@ -23,7 +24,7 @@ struct Problem {
     part: i32,
 }
 
-type PartFunc = fn(&str) -> Result<String, String>;
+type PartFunc = fn(&str) -> Result<String>;
 
 /// Hacky macro to slightly simplify the process of importing and using the file
 /// for a new day's problem.
@@ -41,6 +42,16 @@ macro_rules! add_day {
 }
 
 fn main() {
+    match main_impl() {
+        Ok(s) => println!("{}", s),
+        Err(err) => {
+            println!("{}", err.to_string());
+            exit(1);
+        }
+    }
+}
+
+fn main_impl() -> Result<String> {
     let mut methods: HashMap<i32, (PartFunc, PartFunc)> = HashMap::new();
     add_day!(methods, day01);
     add_day!(methods, day02);
@@ -64,45 +75,36 @@ fn main() {
     } else if part == 2 {
         parts.1
     } else {
-        println!("invalid part {}", part);
-        exit(1);
+        return Err(anyhow::anyhow!("invalid part {}", part));
     };
 
-    let input = get_input(day).unwrap();
-    match meth(input.as_str()) {
-        Ok(result) => println!("{}", result),
-        Err(msg) => {
-            println!("ERROR: {}", msg);
-            exit(1);
-        }
-    };
+    let input = get_input(day).context("failed to load input")?;
+    meth(&input)
 }
 
-fn get_input(day: i32) -> Result<String, std::io::Error> {
+fn get_input(day: i32) -> Result<String> {
     let cache_dir = Path::new("./.cache");
     if !cache_dir.exists() {
         fs::create_dir(cache_dir)?;
     }
     let day_file = cache_dir.join(format!("day{:02}.txt", day));
     if day_file.exists() {
-        return fs::read_to_string(day_file);
+        return fs::read_to_string(day_file).context("failed to write to cache");
     }
-    let text = download_input(day).unwrap();
+    let text = download_input(day)?;
     std::fs::write(day_file, text.as_str())?;
     Ok(text)
 }
 
-fn download_input(day: i32) -> Result<String, String> {
-    let cookie = env::var(COOKIE_ENV_VAR_NAME).unwrap();
+fn download_input(day: i32) -> Result<String> {
+    let cookie =
+        env::var(COOKIE_ENV_VAR_NAME).context(format!("${} must be set", COOKIE_ENV_VAR_NAME))?;
     let url = format!("https://adventofcode.com/{}/day/{}/input", YEAR, day);
-    let client = reqwest::blocking::ClientBuilder::new().build().unwrap();
+    let client = reqwest::blocking::ClientBuilder::new().build()?;
     let resp = client
         .get(url)
         .header(reqwest::header::COOKIE, format!("session={}", cookie))
-        .send()
-        .unwrap();
-    match resp.error_for_status() {
-        Err(e) => Err(e.status().unwrap().to_string()),
-        Ok(r) => Ok(r.text().unwrap()),
-    }
+        .send()?
+        .error_for_status()?;
+    resp.text().context("failed to decode response")
 }

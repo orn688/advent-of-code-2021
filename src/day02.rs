@@ -1,5 +1,7 @@
-pub fn part1(input: &str) -> Result<String, String> {
-    let moves = parse_input(input);
+use anyhow::Result;
+
+pub fn part1(input: &str) -> Result<String> {
+    let moves = parse_input(input)?;
     let mut horiz = 0;
     let mut depth = 0;
     for mv in moves {
@@ -7,14 +9,14 @@ pub fn part1(input: &str) -> Result<String, String> {
             "forward" => horiz += mv.count,
             "down" => depth += mv.count,
             "up" => depth -= mv.count,
-            _ => return Err(format!("Invalid direction: {}", mv.direction)),
+            _ => return Err(anyhow::anyhow!("Invalid direction: {}", mv.direction)),
         }
     }
     Ok((horiz * depth).to_string())
 }
 
-pub fn part2(input: &str) -> Result<String, String> {
-    let moves = parse_input(input);
+pub fn part2(input: &str) -> Result<String> {
+    let moves = parse_input(input)?;
     let (mut horiz, mut depth, mut aim) = (0, 0, 0);
 
     for mv in moves {
@@ -25,7 +27,7 @@ pub fn part2(input: &str) -> Result<String, String> {
             }
             "down" => aim += mv.count,
             "up" => aim -= mv.count,
-            _ => return Err(format!("Invalid direction: {}", mv.direction)),
+            _ => return Err(anyhow::anyhow!("Invalid direction: {}", mv.direction)),
         }
     }
     Ok((horiz * depth).to_string())
@@ -36,16 +38,16 @@ struct Move {
     count: i32,
 }
 
-fn parse_input(input: &str) -> Vec<Move> {
+fn parse_input(input: &str) -> Result<Vec<Move>> {
     input
         .trim()
         .lines()
         .map(|l| {
             let parts: Vec<&str> = l.split_whitespace().collect();
-            Move {
+            Ok(Move {
                 direction: parts[0].into(),
-                count: parts[1].parse().unwrap(),
-            }
+                count: parts[1].parse()?,
+            })
         })
         .collect()
 }

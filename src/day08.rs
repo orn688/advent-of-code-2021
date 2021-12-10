@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use anyhow::Result;
+
 use lazy_static::lazy_static;
 
 lazy_static! {
@@ -47,7 +49,7 @@ fn segment_digit_lengths(digits: Vec<&str>) -> HashMap<String, char> {
     inverted_map
 }
 
-pub fn part1(input: &str) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String> {
     let lines = input.trim().lines();
     let count = lines
         .map(|line| line.split(" | ").last().unwrap())
@@ -64,7 +66,7 @@ pub fn part1(input: &str) -> Result<String, String> {
 /// of a digit, that line segment has a unique "signature". The signature is
 /// defined by a counter that, for each number of per-digit segments, maps to the
 /// number of digits that have that number of segments.
-pub fn part2(input: &str) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String> {
     let lines = input.trim().lines();
     let mut sum = 0;
     for line in lines {

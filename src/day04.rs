@@ -1,7 +1,9 @@
+use anyhow::Result;
+
 // Length of each side of the bingo board.
 const BOARD_SIZE: usize = 5;
 
-pub fn part1(input: &str) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String> {
     let mut boards = vec![];
     let numbers = parse_input(input, &mut boards);
     for num in numbers {
@@ -13,10 +15,10 @@ pub fn part1(input: &str) -> Result<String, String> {
             }
         }
     }
-    Err(String::from("no board won"))
+    Err(anyhow::anyhow!("no board won"))
 }
 
-pub fn part2(input: &str) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String> {
     let mut boards = vec![];
     let numbers = parse_input(input, &mut boards);
     for num in numbers {
@@ -33,7 +35,7 @@ pub fn part2(input: &str) -> Result<String, String> {
         }
         boards = new_boards;
     }
-    Err(String::from("some boards never won"))
+    Err(anyhow::anyhow!("some boards never won"))
 }
 
 fn parse_input(input: &str, boards: &mut Vec<Board>) -> Vec<i32> {

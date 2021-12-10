@@ -1,9 +1,11 @@
+use anyhow::Result;
+
 /// Counts the number of times a depth measurement increases from the previous
 /// one.
-pub fn part1(input: &str) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String> {
     let mut num_increasing = 0;
     let mut prev = -1;
-    for depth in parse_input(input)? {
+    for depth in parse_input(input) {
         if prev >= 0 && depth > prev {
             num_increasing += 1;
         }
@@ -14,11 +16,11 @@ pub fn part1(input: &str) -> Result<String, String> {
 
 /// Counts the number of times a depth measurement increases from one window of
 /// three entries to the next.
-pub fn part2(input: &str) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String> {
     let window_size = 3;
     let mut num_increasing = 0;
     let mut prev_sum = -1;
-    let depths = parse_input(input)?;
+    let depths = parse_input(input);
     for window in depths.windows(window_size) {
         let sum = window.iter().sum();
         if prev_sum >= 0 && sum > prev_sum {
@@ -29,9 +31,8 @@ pub fn part2(input: &str) -> Result<String, String> {
     Ok(num_increasing.to_string())
 }
 
-fn parse_input(input: &str) -> Result<Vec<i32>, String> {
-    let numbers: Vec<i32> = input.trim().lines().map(|l| l.parse().unwrap()).collect();
-    Ok(numbers)
+fn parse_input(input: &str) -> Vec<i32> {
+    input.trim().lines().map(|l| l.parse().unwrap()).collect()
 }
 
 #[allow(dead_code)]

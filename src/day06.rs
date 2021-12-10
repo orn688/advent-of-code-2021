@@ -1,13 +1,15 @@
 use std::collections::HashMap;
 
+use anyhow::Result;
+
 const VALUE_AFTER_BIRTH: i32 = 6;
 const NEW_FISH_VALUE: i32 = 8;
 
-pub fn part1(input: &str) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String> {
     Ok(population_after_days(input, 80).to_string())
 }
 
-pub fn part2(input: &str) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String> {
     Ok(population_after_days(input, 256).to_string())
 }
 

@@ -1,11 +1,13 @@
-pub fn part1(input: &str) -> Result<String, String> {
+use anyhow::Result;
+
+pub fn part1(input: &str) -> Result<String> {
     let mut nums = parse_input(input);
     let med = median(&mut nums);
     let fuel: i32 = nums.iter().map(|x| (med - x).abs()).sum();
     Ok(fuel.to_string())
 }
 
-pub fn part2(input: &str) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String> {
     let nums = parse_input(input);
     let max = *nums.iter().max().unwrap();
     let min = *nums.iter().min().unwrap();

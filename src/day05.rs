@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 
+use anyhow::Result;
 use regex::{Captures, Regex};
 
 /// Counts the number of points at which two lines intersect, only counting
 /// horizontal and vertical lines.
-pub fn part1(input: &str) -> Result<String, String> {
+pub fn part1(input: &str) -> Result<String> {
     let lines = parse_input(input)
         .into_iter()
         .filter(|line| line.horizontal() || line.vertical())
@@ -15,7 +16,7 @@ pub fn part1(input: &str) -> Result<String, String> {
 
 /// Counts the number of points at which two lines intersect, including diagonal
 /// lines.
-pub fn part2(input: &str) -> Result<String, String> {
+pub fn part2(input: &str) -> Result<String> {
     let lines = parse_input(input);
     let overlaps = count_overlaps(lines);
     Ok(overlaps.to_string())
