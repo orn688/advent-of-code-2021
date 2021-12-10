@@ -9,12 +9,7 @@ mod day08;
 mod day09;
 
 use anyhow::{Context, Result};
-use std::{
-    collections::HashMap,
-    env, fs,
-    path::Path,
-    process::{self, exit},
-};
+use std::{collections::HashMap, env, fs, path::Path, process::exit};
 
 const YEAR: i32 = 2021;
 static COOKIE_ENV_VAR_NAME: &str = "AOC_SESSION_ID";
@@ -66,8 +61,7 @@ fn main_impl() -> Result<String> {
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
-        println!("Usage: aoc <day> <part>");
-        process::exit(1);
+        return Err(anyhow::anyhow!("Usage: aoc <day> <part>"));
     }
     let day: i32 = args[1].parse().unwrap();
     let parts = methods.get(&day).expect("unimplemented day");
