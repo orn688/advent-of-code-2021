@@ -1,3 +1,5 @@
+use std::collections::{BinaryHeap, HashSet};
+
 use anyhow::Result;
 
 pub fn part1(input: &str) -> Result<String> {
@@ -5,8 +7,8 @@ pub fn part1(input: &str) -> Result<String> {
     let mut sum = 0;
     for (row, vals) in grid.grid.iter().enumerate() {
         for (col, val) in vals.iter().enumerate() {
-            let neighbors = grid.neighbor_vals(row as i32, col as i32);
-            if !neighbors.is_empty() && neighbors.iter().all(|&n| n > val) {
+            let neighbors = grid.neighbor_vals(row, col);
+            if !neighbors.is_empty() && neighbors.iter().all(|n| n > val) {
                 sum += val + 1;
             }
         }
@@ -15,8 +17,37 @@ pub fn part1(input: &str) -> Result<String> {
     Ok(sum.to_string())
 }
 
-pub fn part2(_: &str) -> Result<String> {
-    Ok(String::new())
+/// Uses DFS to explore each "basin" (enclosed group of numbers < 9) and returns
+/// the product of the sizes of the three largest basins.
+pub fn part2(input: &str) -> Result<String> {
+    let grid = parse_input(input);
+    let mut visited = HashSet::new();
+    let mut basins = BinaryHeap::new();
+    for start_row in 0..grid.height() {
+        for start_col in 0..grid.width() {
+            let mut basin_size = 0;
+            let mut stack = vec![(start_row, start_col)];
+            while let Some((row, col)) = stack.pop() {
+                if visited.contains(&(row, col)) || grid.val(row, col) == 9 {
+                    continue;
+                }
+                visited.insert((row, col));
+                basin_size += 1;
+
+                for coord in grid.neighbors(row, col) {
+                    stack.push(coord);
+                }
+            }
+            if basin_size > 0 {
+                basins.push(basin_size);
+            }
+        }
+    }
+    let mut res = 1;
+    for _ in 0..3 {
+        res *= basins.pop().unwrap();
+    }
+    Ok(res.to_string())
 }
 
 fn parse_input(input: &str) -> Grid {
@@ -34,21 +65,40 @@ struct Grid {
 }
 
 impl Grid {
-    fn val(&self, row: i32, col: i32) -> Option<&i32> {
-        self.grid.get(row as usize)?.get(col as usize)
+    fn val(&self, row: usize, col: usize) -> i32 {
+        *self.grid.get(row).unwrap().get(col).unwrap()
     }
 
-    fn neighbor_vals(&self, row: i32, col: i32) -> Vec<&i32> {
-        let coords = vec![
-            (row + 1, col),
-            (row - 1, col),
-            (row, col + 1),
-            (row, col - 1),
-        ];
-        coords
+    fn neighbors(&self, row: usize, col: usize) -> Vec<(usize, usize)> {
+        let mut v = vec![];
+        if row > 0 {
+            v.push((row - 1, col));
+        }
+        if col > 0 {
+            v.push((row, col - 1));
+        }
+        if row + 1 < self.height() {
+            v.push((row + 1, col));
+        }
+        if col + 1 < self.width() {
+            v.push((row, col + 1));
+        }
+        v
+    }
+
+    fn neighbor_vals(&self, row: usize, col: usize) -> Vec<i32> {
+        self.neighbors(row, col)
             .iter()
-            .filter_map(|(r, c)| self.val(*r, *c))
+            .map(|(r, c)| self.val(*r, *c))
             .collect()
+    }
+
+    fn height(&self) -> usize {
+        self.grid.len()
+    }
+
+    fn width(&self) -> usize {
+        self.grid[0].len()
     }
 }
 
@@ -68,5 +118,5 @@ fn test_part1() {
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "1134");
 }
