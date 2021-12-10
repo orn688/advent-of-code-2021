@@ -6,6 +6,7 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 
 use anyhow::{Context, Result};
 use std::{
@@ -61,6 +62,7 @@ fn main_impl() -> Result<String> {
     add_day!(methods, day06);
     add_day!(methods, day07);
     add_day!(methods, day08);
+    add_day!(methods, day09);
 
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
