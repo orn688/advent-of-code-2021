@@ -8,8 +8,11 @@ mod day07;
 mod day08;
 mod day09;
 
+use std::{
+    collections::BTreeMap, env, fs, path::Path, process::exit, time::Duration, time::Instant,
+};
+
 use anyhow::{Context, Result};
-use std::{collections::HashMap, env, fs, path::Path, process::exit};
 
 const YEAR: i32 = 2021;
 static COOKIE_ENV_VAR_NAME: &str = "AOC_SESSION_ID";
@@ -48,7 +51,9 @@ fn main() {
 }
 
 fn main_impl() -> Result<String> {
-    let mut methods: HashMap<i32, (PartFunc, PartFunc)> = HashMap::new();
+    // Use a BTreeMap because it's ordered, so with "all" we can run the
+    // solutions in order.
+    let mut methods: BTreeMap<i32, (PartFunc, PartFunc)> = BTreeMap::new();
     add_day!(methods, day01);
     add_day!(methods, day02);
     add_day!(methods, day03);
@@ -60,7 +65,30 @@ fn main_impl() -> Result<String> {
     add_day!(methods, day09);
 
     let args: Vec<String> = env::args().collect();
-    if args.len() != 3 {
+    if args.len() == 2 && args[1].eq("all") {
+        let mut total_duration = Duration::ZERO;
+        for (&day, (part1, part2)) in &methods {
+            let input = get_input(day).context("failed to load input")?;
+            println!("Day #{}", day);
+
+            let start = Instant::now();
+            let sol = part1(&input).unwrap();
+            total_duration += start.elapsed();
+            println!("  Part 1: {}", sol);
+
+            let start = Instant::now();
+            let sol = part2(&input).unwrap();
+            total_duration += start.elapsed();
+            println!("  Part 2: {}", sol);
+
+            println!();
+        }
+        return Ok(format!(
+            "{} day(s) complete in {:?}!",
+            methods.len(),
+            Duration::from_millis(total_duration.subsec_millis() as u64),
+        ));
+    } else if args.len() != 3 {
         return Err(anyhow::anyhow!("Usage: aoc <day> <part>"));
     }
     let day: i32 = args[1].parse().unwrap();
