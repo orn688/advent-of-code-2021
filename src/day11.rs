@@ -12,8 +12,17 @@ pub fn part1(input: &str) -> Result<String> {
     Ok(flashes.to_string())
 }
 
-pub fn part2(_: &str) -> Result<String> {
-    Ok(String::new())
+/// Computes the number of the first step on which all the squares will flash.
+pub fn part2(input: &str) -> Result<String> {
+    let mut grid = parse_input(input);
+    let mut step_number = 0;
+    loop {
+        step_number += 1;
+        let flashes = grid.step();
+        if flashes == grid.nums.len() {
+            return Ok(step_number.to_string());
+        }
+    }
 }
 
 fn parse_input(input: &str) -> Grid {
@@ -117,5 +126,5 @@ fn test_part1() {
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "195");
 }
