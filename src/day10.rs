@@ -45,8 +45,53 @@ fn close_char(open: char) -> char {
     }
 }
 
-pub fn part2(_: &str) -> Result<String> {
-    Ok(String::new())
+/// Checks for lines that have un-closed sequences of parentheses but are
+/// otherwise valid, e.g. "[{}", and calculates a score for each such line based
+/// on the characters that would need to be added to complete the line. Then
+/// returns the median of all those scores.
+pub fn part2(input: &str) -> Result<String> {
+    let mut close_scores: HashMap<_, i64> = HashMap::new();
+    close_scores.insert(')', 1);
+    close_scores.insert(']', 2);
+    close_scores.insert('}', 3);
+    close_scores.insert('>', 4);
+
+    let mut all_scores = vec![];
+    for line in input.trim().lines() {
+        // stack contains the minimum sequence of chars necessary to close all
+        // sequences in the line (in reverse order).
+        let mut stack = String::new();
+        let mut line_invalid = false;
+        for c in line.chars() {
+            if close_scores.contains_key(&c) {
+                let invalid = if let Some(c1) = stack.pop() {
+                    c1 != c
+                } else {
+                    true
+                };
+                if invalid {
+                    line_invalid = true;
+                    break;
+                }
+            } else {
+                stack.push(close_char(c));
+            }
+        }
+        if line_invalid {
+            continue;
+        }
+        let mut score = 0;
+        for c in stack.chars().rev() {
+            score *= 5;
+            score += close_scores.get(&c).unwrap();
+        }
+        all_scores.push(score);
+    }
+
+    all_scores.sort_unstable();
+    let mid_score = all_scores[all_scores.len() / 2];
+
+    Ok(mid_score.to_string())
 }
 
 #[allow(dead_code)]
@@ -70,5 +115,5 @@ fn test_part1() {
 
 #[test]
 fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "");
+    assert_eq!(part2(TEST_INPUT).unwrap(), "288957");
 }
