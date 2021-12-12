@@ -9,6 +9,7 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 
 use std::{
     collections::BTreeMap, env, fs, path::Path, process::exit, time::Duration, time::Instant,
@@ -67,6 +68,7 @@ fn main_impl() -> Result<String> {
     add_day!(methods, day09);
     add_day!(methods, day10);
     add_day!(methods, day11);
+    add_day!(methods, day12);
 
     let args: Vec<String> = env::args().collect();
     if args.len() == 2 && args[1].eq("all") {
