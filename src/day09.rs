@@ -102,8 +102,11 @@ impl Grid {
     }
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
+
+    const TEST_INPUT: &str = "
 2199943210
 3987894921
 9856789892
@@ -111,12 +114,13 @@ const TEST_INPUT: &str = "
 9899965678
 ";
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "15");
-}
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "15");
+    }
 
-#[test]
-fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "1134");
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(TEST_INPUT).unwrap(), "1134");
+    }
 }

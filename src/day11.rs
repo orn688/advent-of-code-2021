@@ -91,22 +91,13 @@ impl Grid {
         }
         flashed.len()
     }
-
-    // Useful for debugging.
-    #[allow(dead_code)]
-    fn print(&self) {
-        for l in self.nums.chunks(self.width as usize) {
-            println!(
-                "{}",
-                l.to_vec().iter().map(|d| d.to_string()).collect::<String>()
-            );
-        }
-        println!();
-    }
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
+
+    const TEST_INPUT: &str = "
 5483143223
 2745854711
 5264556173
@@ -119,12 +110,13 @@ const TEST_INPUT: &str = "
 5283751526
 ";
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "1656");
-}
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "1656");
+    }
 
-#[test]
-fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "195");
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(TEST_INPUT).unwrap(), "195");
+    }
 }

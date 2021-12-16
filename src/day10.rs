@@ -94,8 +94,11 @@ pub fn part2(input: &str) -> Result<String> {
     Ok(mid_score.to_string())
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
+
+    const TEST_INPUT: &str = "
 [({(<(())[]>[[{[]{<()<>>
 [(()[<>])]({[<{<<[]>>(
 {([(<{}[<>[]}>{[]{[(<()>
@@ -108,12 +111,13 @@ const TEST_INPUT: &str = "
 <{([{{}}[<[[[<>{}]]]>[]]
 ";
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "26397");
-}
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "26397");
+    }
 
-#[test]
-fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "288957");
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(TEST_INPUT).unwrap(), "288957");
+    }
 }

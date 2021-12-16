@@ -123,8 +123,11 @@ impl Graph {
     }
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
+
+    const TEST_INPUT: &str = "
 fs-end
 he-DX
 fs-he
@@ -145,12 +148,13 @@ pj-fs
 start-RW
 ";
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "226");
-}
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "226");
+    }
 
-#[test]
-fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "3509");
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(TEST_INPUT).unwrap(), "3509");
+    }
 }

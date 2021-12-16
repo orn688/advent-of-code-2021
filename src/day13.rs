@@ -114,8 +114,11 @@ fn parse_input(input: &str) -> Result<(Vec<Point>, Vec<Fold>)> {
     Ok((points, folds))
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
+
+    const TEST_INPUT: &str = "
 6,10
 0,14
 9,10
@@ -139,18 +142,19 @@ fold along y=7
 fold along x=5
 ";
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "17");
-}
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "17");
+    }
 
-#[test]
-fn test_part2() {
-    let expected_output = "\
+    #[test]
+    fn test_part2() {
+        let expected_output = "\
 #####
 #   #
 #   #
 #   #
 #####";
-    assert_eq!(part2(TEST_INPUT).unwrap(), expected_output);
+        assert_eq!(part2(TEST_INPUT).unwrap(), expected_output);
+    }
 }

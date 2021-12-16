@@ -103,8 +103,11 @@ fn int_from_captures(caps: &Captures, group: usize) -> i32 {
     caps.get(group).unwrap().as_str().parse().unwrap()
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
+
+    const TEST_INPUT: &str = "
 0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
@@ -117,12 +120,13 @@ const TEST_INPUT: &str = "
 5,5 -> 8,2
 ";
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "5");
-}
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "5");
+    }
 
-#[test]
-fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "12");
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(TEST_INPUT).unwrap(), "12");
+    }
 }

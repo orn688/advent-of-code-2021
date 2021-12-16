@@ -97,8 +97,11 @@ fn binary_string_to_int(s: &str) -> Result<isize> {
     isize::from_str_radix(s, 2).context("failed to parse binary string")
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
+
+    const TEST_INPUT: &str = "
 00100
 11110
 10110
@@ -113,12 +116,13 @@ const TEST_INPUT: &str = "
 01010
 ";
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "198");
-}
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "198");
+    }
 
-#[test]
-fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "230");
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(TEST_INPUT).unwrap(), "230");
+    }
 }

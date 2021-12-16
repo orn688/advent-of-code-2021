@@ -45,15 +45,19 @@ fn parse_input(input: &str) -> Vec<i32> {
         .collect()
 }
 
-#[allow(dead_code)]
-const TEST_INPUT: &str = "16,1,2,0,4,2,7,1,2,14";
+#[cfg(test)]
+mod tests {
+    use super::{part1, part2};
 
-#[test]
-fn test_part1() {
-    assert_eq!(part1(TEST_INPUT).unwrap(), "37");
-}
+    const TEST_INPUT: &str = "16,1,2,0,4,2,7,1,2,14";
 
-#[test]
-fn test_part2() {
-    assert_eq!(part2(TEST_INPUT).unwrap(), "168");
+    #[test]
+    fn test_part1() {
+        assert_eq!(part1(TEST_INPUT).unwrap(), "37");
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(part2(TEST_INPUT).unwrap(), "168");
+    }
 }
