@@ -4,33 +4,50 @@ use anyhow::Result;
 use itertools::{Itertools, MinMaxResult};
 
 pub fn part1(input: &str) -> Result<String> {
-    let (mut template, rules) = parse_input(input)?;
+    let (template, rules) = parse_input(input)?;
+    Ok(counts_after_iterations(template, rules, 10)?.to_string())
+}
 
-    for _ in 0..10 {
-        let mut prev = None;
-        let mut new_template = String::new();
-        for c in template.chars() {
-            if let Some(prev) = prev {
-                if let Some(&new) = rules.get(&(prev, c)) {
-                    new_template.push(new)
+pub fn part2(_: &str) -> Result<String> {
+    // TODO: The solution is too inefficient to solve the problem for 40
+    // iterations. Translate the Python DP solution into Rust.
+    Ok(String::new())
+}
+
+fn counts_after_iterations(template: String, rules: InsertionRules, iters: usize) -> Result<usize> {
+    let mut counts: Counter = Counter::new();
+    let mut prev = None;
+
+    for c in template.chars() {
+        incr_count(&mut counts, c);
+        if let Some(prev) = prev {
+            let mut stack = vec![(prev, c, iters)];
+            while let Some((a, b, remaining)) = stack.pop() {
+                if remaining == 0 {
+                    continue;
+                }
+                if let Some(&new) = rules.get(&(a, b)) {
+                    incr_count(&mut counts, new);
+                    stack.push((a, new, remaining - 1));
+                    stack.push((new, b, remaining - 1));
                 }
             }
-            new_template.push(c);
-            prev = Some(c);
         }
-        template = new_template;
+        prev = Some(c);
     }
 
-    let counts = template.chars().counts();
     match counts.values().minmax() {
-        MinMaxResult::MinMax(min, max) => Ok((max - min).to_string()),
-        MinMaxResult::OneElement(_) => Ok(0.to_string()),
+        MinMaxResult::MinMax(min, max) => Ok(max - min),
+        MinMaxResult::OneElement(_) => Ok(0),
         MinMaxResult::NoElements => Err(anyhow::anyhow!("no elements")),
     }
 }
 
-pub fn part2(_: &str) -> Result<String> {
-    Ok(String::new())
+type Counter = HashMap<char, usize>;
+
+fn incr_count(counter: &mut Counter, item: char) {
+    let count = counter.entry(item).or_insert(0);
+    *count += 1;
 }
 
 type InsertionRules = HashMap<(char, char), char>;
