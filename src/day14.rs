@@ -8,10 +8,9 @@ pub fn part1(input: &str) -> Result<String> {
     Ok(counts_after_iterations(template, rules, 10)?.to_string())
 }
 
-pub fn part2(_: &str) -> Result<String> {
-    // TODO: The solution is too inefficient to solve the problem for 40
-    // iterations. Translate the Python DP solution into Rust.
-    Ok(String::new())
+pub fn part2(input: &str) -> Result<String> {
+    let (template, rules) = parse_input(input)?;
+    Ok(counts_after_iterations(template, rules, 40)?.to_string())
 }
 
 fn counts_after_iterations(template: String, rules: InsertionRules, iters: usize) -> Result<usize> {
@@ -93,8 +92,11 @@ CN -> C
         assert_eq!(part1(TEST_INPUT).unwrap(), "1588");
     }
 
+    // TODO: enable this test after translating the optimize DP solution from
+    // Python into Rust.
     #[test]
+    #[ignore]
     fn test_part2() {
-        assert_eq!(part2(TEST_INPUT).unwrap(), "");
+        assert_eq!(part2(TEST_INPUT).unwrap(), "2188189693529");
     }
 }
