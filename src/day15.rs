@@ -4,8 +4,42 @@ use std::{
 };
 
 use anyhow::Result;
+use itertools::Itertools;
 
 pub fn part1(input: &str) -> Result<String> {
+    shortest_distance(input)
+}
+
+pub fn part2(input: &str) -> Result<String> {
+    // Great a 5x5 grid of the original grid, with each new section of grid
+    // having its digits increased by the distance from the original, wrapping
+    // around from 9 to 1.
+    let multiplier: usize = 5;
+    let mut parts = vec![];
+    for y in 0..multiplier {
+        for line in input.trim().lines() {
+            for x in 0..multiplier {
+                let new_line = line
+                    .chars()
+                    .map(|c| {
+                        let orig = c.to_digit(10).unwrap() as usize;
+                        let mut new = orig + x + y;
+                        if new > 9 {
+                            new = new % 10 + 1;
+                        }
+                        new.to_string()
+                    })
+                    .join("");
+                parts.push(new_line);
+            }
+            parts.push("\n".to_string());
+        }
+    }
+    let input = parts.join("");
+    shortest_distance(&input)
+}
+
+fn shortest_distance(input: &str) -> Result<String> {
     let grid = parse_input(input);
 
     let mut heap: BinaryHeap<HeapItem> = BinaryHeap::new();
@@ -38,10 +72,6 @@ pub fn part1(input: &str) -> Result<String> {
     }
 
     Err(anyhow::anyhow!("no path through the grid"))
-}
-
-pub fn part2(_: &str) -> Result<String> {
-    Ok(String::new())
 }
 
 #[derive(Eq, PartialEq, Debug)]
@@ -137,6 +167,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(part2(TEST_INPUT).unwrap(), "");
+        assert_eq!(part2(TEST_INPUT).unwrap(), "315");
     }
 }
