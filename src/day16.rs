@@ -6,29 +6,73 @@ pub fn part1(input: &str) -> Result<String> {
     Ok(version_sum(&packet).to_string())
 }
 
-fn version_sum(packet: &Packet) -> u32 {
-    packet.version as u32
+fn version_sum(packet: &Packet) -> u64 {
+    packet.version as u64
         + match &packet.content {
             PacketContent::Operator(_, children) => children.iter().map(version_sum).sum(),
             PacketContent::Literal(_) => 0,
         }
 }
 
-pub fn part2(_: &str) -> Result<String> {
-    Ok(String::new())
+pub fn part2(input: &str) -> Result<String> {
+    let packet = parse_input(input)?;
+    Ok(eval_packet(packet).to_string())
+}
+
+fn eval_packet(packet: Packet) -> u64 {
+    match packet.content {
+        PacketContent::Literal(val) => val,
+        PacketContent::Operator(type_id, subpackets) => {
+            let mut subvals = subpackets.into_iter().map(eval_packet);
+            match type_id {
+                0 => subvals.sum(),
+                1 => subvals.product(),
+                2 => subvals.min().unwrap(),
+                3 => subvals.max().unwrap(),
+                5 => {
+                    let first = subvals.next().unwrap();
+                    let second = subvals.next().unwrap();
+                    if first > second {
+                        1
+                    } else {
+                        0
+                    }
+                }
+                6 => {
+                    let first = subvals.next().unwrap();
+                    let second = subvals.next().unwrap();
+                    if first < second {
+                        1
+                    } else {
+                        0
+                    }
+                }
+                7 => {
+                    let first = subvals.next().unwrap();
+                    let second = subvals.next().unwrap();
+                    if first == second {
+                        1
+                    } else {
+                        0
+                    }
+                }
+                _ => panic!("invalid operator packet type id {}", type_id),
+            }
+        }
+    }
 }
 
 #[derive(Debug)]
 struct Packet {
-    version: u32,
+    version: u64,
     length: usize,
     content: PacketContent,
 }
 
 #[derive(Debug)]
 enum PacketContent {
-    Operator(u32, Vec<Packet>),
-    Literal(u32),
+    Operator(u64, Vec<Packet>),
+    Literal(u64),
 }
 
 fn parse_input(input: &str) -> Result<Packet> {
@@ -46,16 +90,16 @@ fn parse_packet(bits: &mut impl Iterator<Item = u8>) -> Result<Packet> {
     let packet = match typ {
         // 4 indicates a literal integer.
         4 => {
-            let mut val: u32 = 0;
+            let mut val: u64 = 0;
             loop {
                 let part = parse_num(bits, 5)?;
                 length += 5;
                 val <<= 4;
                 let mask = 0b10000;
                 if part & mask > 0 {
-                    val |= (part & 0b1111) as u32;
+                    val |= (part & 0b1111) as u64;
                 } else {
-                    val |= part as u32;
+                    val |= part as u64;
                     break;
                 }
             }
@@ -100,7 +144,7 @@ fn parse_packet(bits: &mut impl Iterator<Item = u8>) -> Result<Packet> {
     Ok(packet)
 }
 
-fn parse_num(bits: &mut impl Iterator<Item = u8>, len: usize) -> Result<u32> {
+fn parse_num(bits: &mut impl Iterator<Item = u8>, len: usize) -> Result<u64> {
     assert!(len <= 32, "can only parse up to 32 bits");
     let bits = bits.take(len).collect_vec();
     if bits.len() < len {
@@ -110,7 +154,7 @@ fn parse_num(bits: &mut impl Iterator<Item = u8>, len: usize) -> Result<u32> {
     bits.iter().for_each(|&b| {
         assert!(b <= 1, "bits must only be zero or one, got {}", b);
         ret <<= 1;
-        ret += b as u32;
+        ret += b as u64;
     });
     Ok(ret)
 }
@@ -130,6 +174,11 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(part2("").unwrap(), "");
+        assert_eq!(part2("C200B40A82").unwrap(), "3");
+        assert_eq!(part2("04005AC33890").unwrap(), "54");
+        assert_eq!(part2("880086C3E88112").unwrap(), "7");
+        assert_eq!(part2("F600BC2D8F").unwrap(), "0");
+        assert_eq!(part2("9C005AC2F8F0").unwrap(), "0");
+        assert_eq!(part2("9C0141080250320F1802104A08").unwrap(), "1");
     }
 }
