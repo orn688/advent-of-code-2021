@@ -29,33 +29,9 @@ fn eval_packet(packet: Packet) -> u64 {
                 1 => subvals.product(),
                 2 => subvals.min().unwrap(),
                 3 => subvals.max().unwrap(),
-                5 => {
-                    let first = subvals.next().unwrap();
-                    let second = subvals.next().unwrap();
-                    if first > second {
-                        1
-                    } else {
-                        0
-                    }
-                }
-                6 => {
-                    let first = subvals.next().unwrap();
-                    let second = subvals.next().unwrap();
-                    if first < second {
-                        1
-                    } else {
-                        0
-                    }
-                }
-                7 => {
-                    let first = subvals.next().unwrap();
-                    let second = subvals.next().unwrap();
-                    if first == second {
-                        1
-                    } else {
-                        0
-                    }
-                }
+                5 => (subvals.next().unwrap() > subvals.next().unwrap()) as u64,
+                6 => (subvals.next().unwrap() < subvals.next().unwrap()) as u64,
+                7 => subvals.all_equal() as u64,
                 _ => panic!("invalid operator packet type id {}", type_id),
             }
         }
